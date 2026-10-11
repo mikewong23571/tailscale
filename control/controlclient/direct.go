@@ -366,6 +366,12 @@ func NewDirect(opts Options) (*Direct, error) {
 		httpc = &http.Client{Transport: tr}
 	}
 
+	var endpointErr error
+	httpc, endpointErr = wrapHeadscaleEndpointHTTPClient(httpc, opts.ServerURL, opts.Dialer.SystemDial)
+	if endpointErr != nil {
+		return nil, endpointErr
+	}
+
 	c := &Direct{
 		httpc:             httpc,
 		interceptedDial:   interceptedDial,
